@@ -29,7 +29,7 @@ LOCAL_APPS = [
     'api',
     'django_filters',
     'import_export',
-    ]
+]
 
 DJANGO_APPS = [
     'django.contrib.admin',
