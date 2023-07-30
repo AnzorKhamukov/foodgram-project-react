@@ -204,7 +204,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         except TypeError:
             raise serializers.ValidationError(
                 'Ошибка при преобразовании списка ингредиентов'
-                )
+            )
 
         return data
 
