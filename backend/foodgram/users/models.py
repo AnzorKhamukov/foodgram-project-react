@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from users.validators import validate_username
 
@@ -38,6 +39,7 @@ class User(AbstractUser):
         blank=False,
         null=False,
     )
+    USERNAME_FIELD = 'email'
 
     class Meta:
         ordering = ['id']
@@ -69,6 +71,14 @@ class Subscription(models.Model):
             )
         ]
         verbose_name = 'Подписка'
+
+    def validate(self, data):
+        request = self.context.get('request')
+        if request.user == data['author']:
+            raise ValidationError(
+                'Нельзя подписываться на самого себя!'
+            )
+        return data
 
     def __str__(self):
         return f'{self.user.username} подписан на {self.author.username}'

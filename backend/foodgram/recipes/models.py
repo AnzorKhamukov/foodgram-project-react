@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -10,9 +11,11 @@ class Tag(models.Model):
         max_length=200,
         unique=True
     )
-    color = models.CharField(
+    color = ColorField(
         'Цвет',
-        max_length=7,
+        default='#FF0000',
+        format='hexa',
+        max_length=12,
         unique=True
     )
     slug = models.SlugField(
@@ -35,12 +38,17 @@ class Ingredient(models.Model):
     )
     measurement_unit = models.CharField(
         'Единица измерения',
-        max_length=200,
+        max_length=10,
     )
 
     class Meta:
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['ingredient']
+                )
+        ]
+        verbose_name = 'Ингредиент',
+        verbose_name_plural = 'Ингредиенты',
 
     def __str__(self):
         return self.name
@@ -82,9 +90,12 @@ class Recipe(models.Model):
             )
         ]
     )
+    pub_date = models.DateTimeField(
+        'Дата публикации рецепта', auto_now_add=True, db_index=True
+    )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['pub_date']
         verbose_name = 'Рецепт'
 
     def __str__(self):
@@ -96,14 +107,13 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         related_name='recipeingredients',
-        verbose_name='Рецепт'
-
+        verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         related_name='recipeingredients',
-        verbose_name='Ингредиент'
+        verbose_name='Ингредиент',
     )
     amount = models.IntegerField(
         'Количество',
@@ -115,6 +125,11 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['ingredient', 'recipe']
+                )
+        ]
         verbose_name = 'Ингредиент в рецепте'
 
 

@@ -14,8 +14,7 @@ class UserSignUpSerializer(UserCreateSerializer):
     """Сериализатор для регистрации пользователей."""
     class Meta:
         model = User
-        fields = ('email', 'id', 'username', 'first_name',
-                  'last_name', 'password')
+        fields = '__all__'
 
 
 class UserGetSerializer(UserSerializer):
@@ -64,7 +63,10 @@ class UserSubscribeRepresentSerializer(UserGetSerializer):
             recipes_limit = request.query_params.get('recipes_limit')
         recipes = obj.recipes.all()
         if recipes_limit:
-            recipes = obj.recipes.all()[:int(recipes_limit)]
+            try:
+                recipes = obj.recipes.all()[:int(recipes_limit)]
+            except ValueError:
+                recipes_limit = None
         return RecipeSmallSerializer(recipes, many=True,
                                      context={'request': request}).data
 
@@ -154,9 +156,7 @@ class RecipeGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients',
-                  'is_favorited', 'is_in_shopping_cart', 'name',
-                  'image', 'text', 'cooking_time')
+        fields = '__all__'
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -186,8 +186,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('ingredients', 'tags', 'image',
-                  'name', 'text', 'cooking_time')
+        fields = '__all__'
 
     def validate(self, data):
         ingredients_list = []
@@ -197,10 +196,16 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                     'Количество не может быть меньше 1'
                 )
             ingredients_list.append(ingredient.get('id'))
-        if len(set(ingredients_list)) != len(ingredients_list):
+        try:
+            if len(set(ingredients_list)) != len(ingredients_list):
+                raise serializers.ValidationError(
+                    'Вы пытаетесь добавить в рецепт два одинаковых ингредиента'
+                )
+        except TypeError:
             raise serializers.ValidationError(
-                'Вы пытаетесь добавить в рецепт два одинаковых ингредиента'
-            )
+                'Ошибка при преобразовании списка ингредиентов'
+                )
+
         return data
 
     @transaction.atomic
