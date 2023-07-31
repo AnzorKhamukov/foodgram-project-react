@@ -7,7 +7,8 @@ class Command(BaseCommand):
     help = 'Load data from CSV file into the Ingredient model.'
 
     def add_arguments(self, parser):
-        parser.add_argument('csv_file', type=str, help='The path to the CSV file')
+        parser.add_argument('csv_file',
+                            type=str, help='The path to the CSV file')
 
     def handle(self, *args, **options):
         csv_file = options['csv_file']
