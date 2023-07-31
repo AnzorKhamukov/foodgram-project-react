@@ -208,6 +208,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
         return data
 
+    def validate_tags(self, data):
+        if not data:
+            raise serializers.ValidationError(
+                'Выберите тэг'
+            )
+        return data
+
     @transaction.atomic
     def create(self, validated_data):
         request = self.context.get('request')

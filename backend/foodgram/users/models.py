@@ -39,7 +39,6 @@ class User(AbstractUser):
         blank=False,
         null=False,
     )
-    USERNAME_FIELD = 'email'
 
     class Meta:
         ordering = ['id']
