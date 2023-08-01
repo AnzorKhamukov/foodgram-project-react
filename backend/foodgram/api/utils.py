@@ -1,12 +1,11 @@
 import base64
 
-from django.db.models import Sum
-from django.shortcuts import get_object_or_404, HttpResponse
 from django.core.files.base import ContentFile
+from django.db.models import Sum
+from django.shortcuts import HttpResponse, get_object_or_404
+from recipes.models import Ingredient, RecipeIngredient
 from rest_framework import serializers, status
 from rest_framework.response import Response
-
-from recipes.models import Ingredient, RecipeIngredient
 
 
 class Base64ImageField(serializers.ImageField):
