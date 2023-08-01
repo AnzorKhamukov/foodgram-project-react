@@ -213,6 +213,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Выберите тэг'
             )
+
+        if len(set(data)) != len(data):
+            raise serializers.ValidationError('Тэги должны быть уникальными')
+
         return data
 
     @transaction.atomic
