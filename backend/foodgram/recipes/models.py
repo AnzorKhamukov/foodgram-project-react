@@ -90,12 +90,9 @@ class Recipe(models.Model):
             )
         ]
     )
-    pub_date = models.DateTimeField(
-        'Дата публикации рецепта', auto_now_add=True, db_index=True
-    )
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ['-id']
         verbose_name = 'Рецепт'
 
     def __str__(self):
