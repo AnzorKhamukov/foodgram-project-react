@@ -22,12 +22,12 @@ services:
     build: ./frontend/
     command: cp -r /app/build/. /static/
     volumes:
-      - static:/app/static
+      - static:/static
   gateway:
     build: ./nginx/
     env_file: .env
     volumes:
-      - static:/app/static
+      - static:/static
       - media:/app/media
     ports:
       - 8000:80
