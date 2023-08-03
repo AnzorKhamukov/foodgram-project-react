@@ -1,8 +1,7 @@
 import base64
 
 from django.core.files.base import ContentFile
-from django.db.models import Sum
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import get_object_or_404
 from recipes.models import Ingredient, RecipeIngredient
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -60,22 +59,3 @@ def delete_model_instance(request, model_name, instance, error_message):
                         status=status.HTTP_400_BAD_REQUEST)
     model_name.objects.filter(user=request.user, recipe=instance).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-def shopping_cart(self, request):
-    """Вспомогательная функция для загрузки списка покупок."""
-    ingredients = RecipeIngredient.objects.filter(
-        recipe__carts__user=request.user
-    ).values(
-        'ingredient__name', 'ingredient__measurement_unit'
-    ).annotate(ingredient_amount=Sum('amount'))
-    shopping_list = ['Список покупок:\n']
-    for ingredient in ingredients:
-        name = ingredient['ingredient__name']
-        unit = ingredient['ingredient__measurement_unit']
-        amount = ingredient['ingredient_amount']
-        shopping_list.append(f'\n{name} - {amount}, {unit}')
-    response = HttpResponse(shopping_list, content_type='text/plain')
-    response['Content-Disposition'] = \
-        'attachment; filename="shopping_cart.txt"'
-    return response
