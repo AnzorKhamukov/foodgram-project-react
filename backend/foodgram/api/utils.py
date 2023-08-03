@@ -1,7 +1,8 @@
 import base64
 
 from django.core.files.base import ContentFile
-from django.shortcuts import get_object_or_404
+from django.db.models import Sum
+from django.shortcuts import HttpResponse, get_object_or_404
 from recipes.models import Ingredient, RecipeIngredient
 from rest_framework import serializers, status
 from rest_framework.response import Response
@@ -59,3 +60,4 @@ def delete_model_instance(request, model_name, instance, error_message):
                         status=status.HTTP_400_BAD_REQUEST)
     model_name.objects.filter(user=request.user, recipe=instance).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
