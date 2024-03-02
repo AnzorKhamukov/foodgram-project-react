@@ -29,7 +29,7 @@ Pillow 9.4.0
 
 Клонировать репозиторий на машину, с которой будет будет запускаться сервис (либо по SSH-ссылке, либо скопировать и распаковать zip-архив). Для работы требуется самостоятельно создать и заполнить файл .env
 
-git clone https://github.com/andmerk93/foodgram-project-react.git
+git clone https://github.com/anzorkhamukov/foodgram-project-react.git
 На машине должны быть установлены Docker и Docker-compose актуальной версии
 
 Нужно перейти в папку foodgram-project-react/infra
